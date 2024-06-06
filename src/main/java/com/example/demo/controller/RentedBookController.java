@@ -34,30 +34,23 @@ public class RentedBookController {
 	private MongoTemplate mongoTemplate;
 
 	@PostMapping(path = "/save")
-	public RentedBookInfoItem create(@RequestBody RentedBookInfoItem rentedBookInfo) {
-		rentedBookInfo.setReceivingDate(new Date());
-		Optional<ReaderItem> readerItemOptional = readerRepository.findById(rentedBookInfo.getReaderId());
-		if (readerItemOptional.isPresent()) {
+	public RentedBookInfoItem create(@RequestBody RentedBook rentedBook) {
+		RentedBookInfoItem rentedBookInfoItem = new RentedBookInfoItem();
+		rentedBookInfoItem.setReceivingDate(new Date());
+		Optional<ReaderItem> readerItemOptional = readerRepository.findById(rentedBook.getReaderId());
+		Optional<BookItem> optionalBookItem = bookRepository.findById(rentedBook.getBookId());
+		if (readerItemOptional.isPresent() && optionalBookItem.isPresent()) {
 			ReaderItem reader = readerItemOptional.get();
-			Optional<BookItem> book = bookRepository.findById(rentedBookInfo.getBookId());
-			reader.addBooks(book.get());
+			rentedBookInfoItem.setReader(readerItemOptional.get());
+			rentedBookInfoItem.setBook(optionalBookItem.get());
 			readerRepository.save(reader);
+			return rentedBookInfoRepository.save(rentedBookInfoItem);
 		}
-		return rentedBookInfoRepository.save(rentedBookInfo);
+		return null;
 	}
 
 	@GetMapping()
 	public List<RentedBookInfoItem> getAll() {
-		Aggregation aggregation = Aggregation.newAggregation(
-				Aggregation.lookup("bookitems", "id", "bookId", "bookitem"),
-				Aggregation.project()
-						.andExpression("_id").as("id")
-						.andExpression("bookitem.id").as("bookId")
-						.andExpression("bookitem.authors").as("readerId")
-						.andExpression("receivingDate").as("receivingDate")
-						.andExpression("returnDate").as("returnDate")
-		);
-		AggregationResults<RentedBookInfoItem> results = mongoTemplate.aggregate(aggregation, "rentedbookinfoitems", RentedBookInfoItem.class);
-		return results.getMappedResults();
+		return rentedBookInfoRepository.findAll();
 	}
 }

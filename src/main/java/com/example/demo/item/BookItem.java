@@ -13,7 +13,6 @@ public class BookItem {
 	private Short yearPublication;
 	private String genre;
 	private String ibsn;
-	private ReaderItem reader;
 
 	public String getId() {
 		return id;
@@ -61,14 +60,6 @@ public class BookItem {
 
 	public void setIbsn(String ibsn) {
 		this.ibsn = ibsn;
-	}
-
-	public ReaderItem getReaderItem() {
-		return reader;
-	}
-
-	public void setReaderItem(ReaderItem readerItem) {
-		this.reader = readerItem;
 	}
 
 	public BookItem(String name, String authors, Short yearPublication, String genre, String ibsn) {

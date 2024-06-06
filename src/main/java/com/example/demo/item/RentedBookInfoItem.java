@@ -2,6 +2,7 @@ package com.example.demo.item;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.Date;
 
@@ -9,8 +10,9 @@ import java.util.Date;
 public class RentedBookInfoItem {
 	@Id
 	private String id;
-	private String bookId;
-	private String readerId;
+	private BookItem book;
+	@DocumentReference(lazy = true, lookup = "{ 'reader' : ?#{#self.id} }")
+	private ReaderItem reader;
 	private Date receivingDate;
 	private Date returnDate;
 
@@ -22,20 +24,20 @@ public class RentedBookInfoItem {
 		this.id = id;
 	}
 
-	public String getBookId() {
-		return bookId;
+	public BookItem getBook() {
+		return book;
 	}
 
-	public void setBookId(String bookId) {
-		this.bookId = bookId;
+	public void setBook(BookItem book) {
+		this.book = book;
 	}
 
-	public String getReaderId() {
-		return readerId;
+	public ReaderItem getReader() {
+		return reader;
 	}
 
-	public void setReaderId(String readerId) {
-		this.readerId = readerId;
+	public void setReader(ReaderItem reader) {
+		this.reader = reader;
 	}
 
 	public Date getReceivingDate() {

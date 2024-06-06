@@ -15,9 +15,9 @@ public class ReaderItem {
 	private String name;
 	private String surName;
 	private String email;
-	@DocumentReference(lazy = true, lookup = "{ 'reader' : ?#{#self._id} }")
+	@DocumentReference(lazy = true)
 	@ReadOnlyProperty
-	private List<BookItem> books = new ArrayList<>();
+	private List<RentedBookInfoItem> books = new ArrayList<>();
 
 	public String getId() {
 		return id;
@@ -51,15 +51,11 @@ public class ReaderItem {
 		this.email = email;
 	}
 
-	public List<BookItem> getBooks() {
+	public List<RentedBookInfoItem> getBooks() {
 		return books;
 	}
 
-	public void setBooks(List<BookItem> books) {
+	public void setBooks(List<RentedBookInfoItem> books) {
 		this.books = books;
-	}
-
-	public void addBooks(BookItem book) {
-		this.books.add(book);
 	}
 }
